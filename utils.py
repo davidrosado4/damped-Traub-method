@@ -83,10 +83,11 @@ def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax =
 
     # Define the maximum number of iterations for normalization
     max_iterations = np.max(iterations_array)
+    min_iterations = np.min(iterations_array)
 
     # Plot the colored picture
     plt.figure(figsize = (10,10))
-    plt.imshow(iterations_array, extent = [xmin, xmax, ymin, ymax], cmap = 'hsv', vmax = max_iterations)
+    plt.imshow(iterations_array, extent = [xmin, xmax, ymin, ymax], cmap = 'hsv', vmax = max_iterations, vmin = min_iterations)
 
     # Plot the roots
     root_markers = np.array(roots)
