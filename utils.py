@@ -1,7 +1,7 @@
 # Function definitions for the project
 import numpy as np
 import matplotlib.pyplot as plt
-def damped_traub(f, df, z, tol = 1e-12, delta = 1):
+def damped_traub(f, df, z, tol = 1e-15, delta = 1):
     """
     Damped Newton's method with Traub's modification
     :param f: Function to find root of
@@ -17,7 +17,7 @@ def damped_traub(f, df, z, tol = 1e-12, delta = 1):
             newt_step = z - f(z)/df(z)
             z_new = newt_step - delta * f(newt_step)/df(z)
         else:
-            return None, i # Return None if derivative is too small
+            return None, 50 # Return None if derivative is too small
 
         # Stop the method when two iterates are close or f(z) = 0
         if abs(f(z)) < tol or abs(z_new - z) < tol:
@@ -26,9 +26,9 @@ def damped_traub(f, df, z, tol = 1e-12, delta = 1):
             # Update z and continue
             z = z_new
     # If no convergence, return None
-    return None, i
+    return None, 50
 
-def plot_damped_traub(f, df, tol = 1e-12, delta = 1, N = 2000, xmin = -1, xmax = 1, ymin = -1, ymax = 1):
+def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax = 1, ymin = -1, ymax = 1):
     """
     Plots the convergence of damped Traub's method
     :param f: Function to find root of
