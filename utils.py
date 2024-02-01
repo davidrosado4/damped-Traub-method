@@ -1,7 +1,7 @@
 # Function definitions for the project
 import numpy as np
 import matplotlib.pyplot as plt
-def damped_traub(f, df, z, tol = 1e-15, delta = 1):
+def damped_traub(f, df, z, tol = 1e-15, delta = 1, max_iter = 100):
     """
     Damped Newton's method with Traub's modification
     :param f: Function to find root of
@@ -9,15 +9,16 @@ def damped_traub(f, df, z, tol = 1e-15, delta = 1):
     :param z: Initial guess
     :param tol: Tolerance for convergence
     :param delta: Damping parameter
+    :param max_iter: Maximum number of iterations
     :return: None if no convergence, otherwise root and number of iterations
     """
     # Maximum 50 iterations
-    for i in range(100):
+    for i in range(max_iter):
         if abs(df(z)) > tol:
             newt_step = z - f(z)/df(z)
             z_new = newt_step - delta * f(newt_step)/df(z)
         else:
-            return None, 100 # Return None if derivative is too small
+            return None, max_iter # Return None if derivative is too small
 
         # Stop the method when two iterates are close or f(z) = 0
         if abs(f(z)) < tol or abs(z_new - z) < tol:
@@ -26,7 +27,7 @@ def damped_traub(f, df, z, tol = 1e-15, delta = 1):
             # Update z and continue
             z = z_new
     # If no convergence, return None
-    return None, 100
+    return None, max_iter
 
 def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax = 1, ymin = -1, ymax = 1):
     """
@@ -86,8 +87,8 @@ def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax =
     min_iterations = np.min(iterations_array)
 
     # Plot the colored picture
-    plt.figure(figsize = (10,10))
-    plt.imshow(iterations_array, extent = [xmin, xmax, ymin, ymax], cmap = 'hsv', vmax = max_iterations, vmin = min_iterations)
+    plt.figure(figsize=(10,10))
+    plt.imshow(iterations_array, extent = [xmin, xmax, ymin, ymax], cmap = 'hsv', vmax = max_iterations, vmin = min_iterations, origin='lower')
 
     # Plot the roots
     root_markers = np.array(roots)
