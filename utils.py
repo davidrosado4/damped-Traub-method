@@ -12,12 +12,12 @@ def damped_traub(f, df, z, tol = 1e-15, delta = 1):
     :return: None if no convergence, otherwise root and number of iterations
     """
     # Maximum 50 iterations
-    for i in range(50):
+    for i in range(100):
         if abs(df(z)) > tol:
             newt_step = z - f(z)/df(z)
             z_new = newt_step - delta * f(newt_step)/df(z)
         else:
-            return None, -1 # Return None if derivative is too small
+            return None, 100 # Return None if derivative is too small
 
         # Stop the method when two iterates are close or f(z) = 0
         if abs(f(z)) < tol or abs(z_new - z) < tol:
@@ -26,7 +26,7 @@ def damped_traub(f, df, z, tol = 1e-15, delta = 1):
             # Update z and continue
             z = z_new
     # If no convergence, return None
-    return None, -1
+    return None, 100
 
 def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax = 1, ymin = -1, ymax = 1):
     """
@@ -66,7 +66,7 @@ def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax =
             root, iterations = damped_traub(f, df, point, tol, delta)
 
             # Store the number of iterations
-            iterations_array[i, j] = iterations if iterations != -1 else np.nan  # Replace -1 with NaN
+            iterations_array[i,j] = iterations
 
             # Check if the root is found
             if root:
@@ -82,13 +82,12 @@ def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax =
                     roots.append(root)
 
     # Define the maximum number of iterations for normalization
-    max_iterations = np.nanmax(iterations_array)
-    min_iterations = np.nanmin(iterations_array)
+    max_iterations = np.max(iterations_array)
+    min_iterations = np.min(iterations_array)
 
     # Plot the colored picture
     plt.figure(figsize = (10,10))
-    plt.imshow(iterations_array, extent=[xmin, xmax, ymin, ymax], cmap='hsv', vmax=max_iterations,
-               vmin=min_iterations, interpolation='nearest', origin='lower', aspect='auto')
+    plt.imshow(iterations_array, extent = [xmin, xmax, ymin, ymax], cmap = 'hsv', vmax = max_iterations, vmin = min_iterations)
 
     # Plot the roots
     root_markers = np.array(roots)
