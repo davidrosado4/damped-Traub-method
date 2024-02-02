@@ -29,7 +29,7 @@ def damped_traub(f, df, z, tol = 1e-15, delta = 1, max_iter = 100):
     # If no convergence, return None
     return None, max_iter
 
-def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax = 1, ymin = -1, ymax = 1):
+def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax = 1, ymin = -1, ymax = 1, max_iter = 100):
     """
     Plots the convergence of damped Traub's method
     :param f: Function to find root of
@@ -41,6 +41,7 @@ def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax =
     :param xmax: Maximum x value for plot
     :param ymin: Minimum y value for plot
     :param ymax: Maximum y value for plot
+    :param max_iter: Maximum number of iterations
     :return: None
     """
     # List to store unique roots
@@ -64,7 +65,7 @@ def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax =
             point = complex(z_x[i,j], z_y[i,j])
 
             # Apply damped Traub's method
-            root, iterations = damped_traub(f, df, point, tol, delta)
+            root, iterations = damped_traub(f, df, point, tol, delta, max_iter)
 
             # Store the number of iterations
             iterations_array[i,j] = iterations
@@ -99,8 +100,111 @@ def plot_damped_traub(f, df, tol = 1e-15, delta = 1, N = 2000, xmin = -1, xmax =
 
     # Show the plot
     plt.show()
+# --------------------------------------------------------------------------------------------
+# Function for Damped Traub's method colored plot
+def darken(color, fraction):
+    """
+    Darkens a color by a fraction
+    :param color: Color to darken
+    :param fraction: Fraction to darken by
+    :return: Darkened color
+    """
+    return [p * (1 - fraction) for p in color]
 
+def normalize(bounds, perc):
+    """
+    Normalizes the bounds by a percentage
+    :param bounds: Bounds to normalize
+    :param perc: Percentage to normalize by
+    :return: Normalized bounds
+    """
+    a = bounds[0]
+    b = bounds[1]
 
+    return (b-a) * perc + a
+
+def pixel_color(x,y, bounds_x, bounds_y, width, height, f, df, roots, colors,tol, delta, max_iter):
+    """
+    Returns the color of a pixel
+    :param x: x-coordinate of the pixel
+    :param y: y-coordinate of the pixel
+    :param bounds_x: Bounds for the x-axis
+    :param bounds_y: Bounds for the y-axis
+    :param width: Width of the plot
+    :param height: Height of the plot
+    :param f: Function to find root of
+    :param df: Derivative of f
+    :param roots: Roots of the function
+    :param colors: Colors of the roots
+    :param tol: Tolerance for convergence
+    :param delta: Damping parameter
+    :param max_iter: Maximum number of iterations
+    :return: Color of the pixel
+    """
+    real = normalize(bounds_x, x/ width)
+    imag = normalize(bounds_y, y/ height)
+    return point_color(complex(real, imag), f, df, roots, colors, delta=delta, tol=tol, max_iter=max_iter)
+
+def point_color(z, f, df, roots, colors, tol = 1e-15, delta = 1, max_iter = 100):
+    """
+    Returns the color of a point
+    :param z: Point to find the color of
+    :param f: Function to find root of
+    :param df: Derivative of f
+    :param tol: Tolerance for convergence
+    :param delta: Damping parameter
+    :param max_iter: Maximum number of iterations
+    :param roots: Roots of the function
+    :param colors: Colors of the roots
+    :return: Color of the point
+    """
+    # Perform the damped Traub's method assigning color intensity to the point
+    for i in range(max_iter):
+        if abs(df(z)) < tol:
+            return [0,0,0]
+        else:
+            newt_step = z - f(z)/df(z)
+            z_new = newt_step - delta * f(newt_step)/df(z)
+            for root_id, root in enumerate(roots):
+                diff = abs(z_new - root)
+                if diff > tol:
+                    z = z_new
+                    continue
+                # Found which attractor the point converges to
+                color_intensity = max(min(i / (1 << 5), 0.95), 0)
+                return darken(colors[root_id], color_intensity)
+    return [0,0,0]
+
+def plot_colored_damped_traub(f, df, bounds_x, bounds_y, width, height, roots, colors, tol = 1e-15, delta = 1, max_iter = 100):
+    """
+    Plots the convergence of damped Traub's method
+    :param f: Function to find root of
+    :param df: Derivative of f
+    :param bounds_x: Bounds for the x-axis
+    :param bounds_y: Bounds for the y-axis
+    :param width: Width of the plot
+    :param height: Height of the plot
+    :param tol: Tolerance for convergence
+    :param delta: Damping parameter
+    :param max_iter: Maximum number of iterations
+    :param roots: Roots of the function
+    :param colors: Colors of the roots
+    :return: None
+    """
+    data = np.zeros((height, width, 3), dtype=np.uint8)
+
+    for x in range(width):
+        for y in range(height):
+            # Assign the color to the pixel
+            data[y, x] = pixel_color(x, y, bounds_x, bounds_y, width, height, f, df, roots, colors, delta= delta, tol=tol, max_iter=max_iter)
+
+    # Plot the colored picture
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.imshow(data, extent = [bounds_x[0], bounds_x[1], bounds_y[0], bounds_y[1]], origin='lower')
+    # Plot the roots
+    ax.scatter([root.real for root in roots], [root.imag for root in roots], marker = 'o', color = 'black', s = 20)
+    plt.axis('off')
+    plt.show()
 
 
 
