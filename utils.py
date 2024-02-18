@@ -203,6 +203,16 @@ def plot_colored_damped_traub(f, df, bounds_x, bounds_y, width, height, roots, c
     ax.imshow(data, extent = [bounds_x[0], bounds_x[1], bounds_y[0], bounds_y[1]], origin='lower')
     # Plot the roots
     ax.scatter([root.real for root in roots], [root.imag for root in roots], marker = 'o', color = 'black', s = 20)
+    # Plotting initial conditions Hubbard et al.
+    '''
+    r = 2.283
+    N = 67
+    circle = np.zeros(N, dtype=complex)
+    for i in range(N):
+        theta = 2*np.pi*i/N
+        circle[i] = r*np.exp(1j*theta)
+    ax.scatter([c.real for c in circle], [c.imag for c in circle], marker = 'o', color = 'white', s = 20)
+    '''
     plt.axis('off')
     plt.show()
 
