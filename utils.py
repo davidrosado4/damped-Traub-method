@@ -286,8 +286,8 @@ def plot_parameter_plane(xmin=-4.5, xmax=6.5, ymin=-6, ymax=6, N=3000, max_iter=
     plt.scatter(1, 0, marker = 'o', color = 'black', s = 20)
 
     # Annotate the scatter points with text
-    plt.text(0, 0, '0', fontsize=12, ha='right', va='bottom')  # Text '0' for (0,0)
-    plt.text(1, 0, '1', fontsize=12, ha='right', va='bottom')  # Text '1' for (1,0)
+    plt.text(0, 0, '0', fontsize=16, ha='right', va='bottom')  # Text '0' for (0,0)
+    plt.text(1, 0, '1', fontsize=16, ha='right', va='bottom')  # Text '1' for (1,0)
 
 
     # Remove the axes
