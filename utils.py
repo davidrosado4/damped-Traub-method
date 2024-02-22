@@ -216,5 +216,82 @@ def plot_colored_damped_traub(f, df, bounds_x, bounds_y, width, height, roots, c
     plt.axis('off')
     plt.show()
 
+# --------------------------------------------------------------------------------------------
+# Parameter plane for the quadratic case
+def iterate_G(z, delta, max_iter=100, tol=1e-8):
+    """
+    Iteratively applies a function G(z) to see if converge to 0, infinity or neither
+    :param z: Initial guess
+    :param delta: Damping parameter
+    :param max_iter: Maximum number of iterations
+    :param tol: Tolerance for convergence
+    :return: Number of iterations if convergence is reached, otherwise max_iter
+    """
+    for i in range(max_iter):
+        z_new = (z*z)*((z*z + 2*z + (1-delta))/((1-delta)*z*z + 2*z + 1))
+        # If convergence is reached to one of the two superattracting fixed points, return the number of iterations
+        if abs(z_new - 0) < tol or abs(z_new)>1e6:
+            return i
+        else:
+            z = z_new
+    return max_iter
+
+def plot_parameter_plane(xmin=-4.5, xmax=6.5, ymin=-6, ymax=6, N=3000, max_iter=100, tol=1e-8):
+    """
+    Plots the parameter plane for the iterate_G function
+    :param xmin: Minimum value of the real part of delta
+    :param xmax: Maximum value of the real part of delta
+    :param ymin: Minimum value of the imaginary part of delta
+    :param ymax: Maximum value of the imaginary part of delta
+    :param N: Number of points along each dimension for the meshgrid
+    :param max_iter: Maximum number of iterations for iterate_G function
+    :param tol: Tolerance for convergence in iterate_G function
+    :return: None
+    """
+
+    # Define the ranges for delta_x and delta_y
+    delta_x_range = np.linspace(xmin, xmax, N)
+    delta_y_range = np.linspace(ymin, ymax, N)
+
+    # Create a meshgrid from the ranges
+    delta_x, delta_y = np.meshgrid(delta_x_range, delta_y_range)
+
+    # Create an array to store the number of iterations
+    iterations_array = np.zeros_like(delta_x)
+
+    # Iterate over the meshgrid
+    for i in range(N):
+        for j in range(N):
+
+            # Create a complex number from the meshgrid
+            delta = complex(delta_x[i,j], delta_y[i,j])
+
+            # Iterate G over the critical point
+            crit_point = (-(2+delta) + np.sqrt((2+delta)**2 - 4*(1-delta)**2))/(2*(1-delta))
+            iterations = iterate_G(crit_point, delta, max_iter, tol)
+
+            # Store the number of iterations
+            iterations_array[i,j] = iterations
+
+    # Define the maximum number of iterations for normalization
+    max_iterations = np.max(iterations_array)
+    min_iterations = np.min(iterations_array)
+
+    # Plot the parameter plane
+    plt.figure(figsize=(10,10))
+    plt.imshow(iterations_array, extent = [xmin, xmax, ymin, ymax], cmap = 'hsv', vmax = max_iterations, vmin = min_iterations, origin='lower')
+
+    # Plot delta=0 and delta=1
+    plt.scatter(0, 0, marker = 'o', color = 'black', s = 20)
+    plt.scatter(1, 0, marker = 'o', color = 'black', s = 20)
+
+    # Annotate the scatter points with text
+    plt.text(0, 0, '0', fontsize=12, ha='right', va='bottom')  # Text '0' for (0,0)
+    plt.text(1, 0, '1', fontsize=12, ha='right', va='bottom')  # Text '1' for (1,0)
 
 
+    # Remove the axes
+    plt.axis('off')
+
+    # Show the plot
+    plt.show()
