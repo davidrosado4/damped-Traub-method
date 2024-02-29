@@ -65,8 +65,8 @@ def evidences_critical_points_control(tol=1e-10, max_iter=1000, N=1000, delta=1)
     """
 
     # Define the ranges for a_x and a_y
-    a_x_range = np.linspace(-9, -6, N)
-    a_y_range = np.linspace(2, -2, N)
+    a_x_range = np.linspace(-4, 4, N)
+    a_y_range = np.linspace(-4, 4, N)
 
     # Create a meshgrid from the ranges
     a_x, a_y = np.meshgrid(a_x_range, a_y_range)
