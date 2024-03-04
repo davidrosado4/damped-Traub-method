@@ -1,8 +1,8 @@
 # Function definitions for the project
 import numpy as np
 import cmath
-
-def damped_traub(f, df, z, tol = 1e-15, delta = 1, max_iter = 100):
+import matplotlib.pyplot as plt
+def damped_traub(f, df, z, tol = 1e-10, delta = 1, max_iter = 100):
     """
     Damped Newton's method with Traub's modification
     :param f: Function to find root of
@@ -65,8 +65,8 @@ def evidences_critical_points_control(tol=1e-10, max_iter=1000, N=1000, delta=1)
     """
 
     # Define the ranges for a_x and a_y
-    a_x_range = np.linspace(-4, 4, N)
-    a_y_range = np.linspace(-4, 4, N)
+    a_x_range = np.linspace(-1, 1, N)
+    a_y_range = np.linspace(-1, 1, N)
 
     # Create a meshgrid from the ranges
     a_x, a_y = np.meshgrid(a_x_range, a_y_range)
@@ -99,3 +99,60 @@ def evidences_critical_points_control(tol=1e-10, max_iter=1000, N=1000, delta=1)
                     # Append the dict to the list
                     data.append(data_dict)
     return count_no_conv, data
+
+def parameter_plane_a(tol=1e-10, max_iter=100, N=1000, delta=1, xmin=0, xmax=1, ymin=0, ymax=1):
+    """
+    Function that plots the parameter plane for the Traub's method with respect the cubic polynomial
+    :param tol: Tolerance for convergence
+    :param max_iter: Maximum number of iterations
+    :param N: Number of points in the meshgrid
+    :param delta: Damping parameter
+    :param xmin: Minimum value for a_x
+    :param xmax: Maximum value for a_x
+    :param ymin: Minimum value for a_y
+    :param ymax: Maximum value for a_y
+    :return: The plot of the parameter plane
+    """
+    # List to store unique roots
+    roots = []
+
+    # Define the ranges for a_x and a_y
+    a_x_range = np.linspace(xmin, xmax, N)
+    a_y_range = np.linspace(ymin, ymax, N)
+
+    # Create a meshgrid from the ranges
+    a_x, a_y = np.meshgrid(a_x_range, a_y_range)
+
+    # Create an array to store the number of iterations
+    iterations_array = np.zeros_like(a_x)
+
+    # Create a complex number from the meshgrid
+    for i in range(N):
+        for j in range(N):
+            # Define the polynomial for that value of a
+            a = complex(a_x[i, j], a_y[i, j])
+
+            def f(z):
+                return z * (z - 1) * (z - a)
+
+            def der_f(z):
+                return 3 * z ** 2 - 2 * (1 + a) * z + a
+            # Iterate the critical point (a+1)/3
+            root, iterations = damped_traub(f, der_f, (a+1)/3, tol=tol, delta=delta, max_iter=max_iter)
+
+            iterations_array[i, j] = iterations
+
+    # Define the maximum number of iterations for normalization
+    max_iterations = np.max(iterations_array)
+    min_iterations = np.min(iterations_array)
+
+    # Plot the colored picture
+    plt.figure(figsize=(10, 10))
+    plt.imshow(iterations_array, extent=[xmin, xmax, ymin, ymax], cmap='hsv', vmax=max_iterations,
+               vmin=min_iterations, origin='lower')
+
+    # Remove the axes
+    plt.axis('off')
+
+    # Show the plot
+    plt.show()
