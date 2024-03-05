@@ -10,7 +10,7 @@ The Damped Traub's Method is a widely-used numerical algorithm for finding roots
 <p align="center">
   <img src="assets/newt_5.png" width="240" />
   <img src="assets/traub_per_orb.png" width="240" />
-  <img src="assets/parameter-plane.png" width="212" />
+  <img src="assets/parameter-plane.png" width="220" />
 </p>
 
 ## Features
