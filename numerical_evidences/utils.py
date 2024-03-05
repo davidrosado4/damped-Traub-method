@@ -90,7 +90,7 @@ def evidences_critical_points_control(tol=1e-10, max_iter=1000, N=1000, delta=1)
             # Iterate the free critical points
             for c in [c1, c2, c3]:
                 root, iterations = damped_traub(f, der_f, c, tol=tol, delta=delta, max_iter=max_iter)
-                if root is None:
+                if abs(root-0)>tol and abs(root-1)>tol and abs(root-a)>tol:
                     count_no_conv += 1
                     print({'a': a, 'crit': c, 'root': root, 'iterations': iterations})
                 else:
