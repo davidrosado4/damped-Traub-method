@@ -7,9 +7,11 @@ This repository contains the Python implementation for visualizing the basins of
 The Damped Traub's Method is a widely-used numerical algorithm for finding roots of complex polynomials. Understanding the behavior of this method in the complex plane is crucial for analyzing its convergence properties. This repository provides tools to visualize the basins of attraction, aiding in the comprehension of the method's behavior. The Damped Traub's Method family encompasses a range of algorithms utilized for root finding of complex polynomials. Within this family, $\delta=0$ corresponds to the well-known Newton Method, while $\delta=1$ corresponds to the Traub Method.
 
 ## Example Pictures
-![newt_5](https://github.com/davidrosado4/damped-Traub-method/assets/114001733/69dced5b-1f06-4dcf-b3ba-862c7be6cadd)
-![traub_per_orb](https://github.com/davidrosado4/damped-Traub-method/assets/114001733/1993104c-9617-418b-9737-08c4d59ba268)
-![parameter-plane](https://github.com/davidrosado4/damped-Traub-method/assets/114001733/b32efca2-8811-4ef5-a0b2-eac1c50933de)
+<p align="center">
+  <img src="assets/newt_5.png" width="340" />
+  <img src="assets/traub_per_orb.png" width="340" />
+  <img src="assets/parameter-plane.png" width="312" />
+</p>
 
 ## Features
 - Implementation in Python
