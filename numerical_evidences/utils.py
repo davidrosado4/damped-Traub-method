@@ -503,7 +503,7 @@ def plot_colored_damped_traub_6left(f, df, bounds_x, bounds_y, width, height, ro
             ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
         if delta == 0.3:
             crit = [0.227385, 0.508038, 0.711481]
-            fixed = [0.579352, 0.500691, 0.338472]
+            fixed = [0.596117, 0.500691, 0.338472]
             ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
             ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
         if delta == 0.5:
@@ -593,6 +593,154 @@ def plot_colored_damped_traub_6right(f, df, bounds_x, bounds_y, width, height, r
         if delta == 0.99:
             crit = [3.25137 - 0.504781j, 3.25137 + 0.504781j, 5.9909]
             fixed = [5.14109, 3.70871 - 0.334675j, 3.70871 + 0.334675j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+
+    # Plotting initial conditions Hubbard et al.
+    '''
+    r = 2.283
+    N = 67
+    circle = np.zeros(N, dtype=complex)
+    for i in range(N):
+        theta = 2*np.pi*i/N
+        circle[i] = r*np.exp(1j*theta)
+    ax.scatter([c.real for c in circle], [c.imag for c in circle], marker = 'o', color = 'white', s = 20)
+    '''
+    plt.axis('off')
+    plt.show()
+
+def plot_colored_damped_traub_1ileft(f, df, bounds_x, bounds_y, width, height, roots, colors, tol=1e-15, delta=1,
+                          max_iter=100, print_free_fixed=False):
+    """
+    Plots the convergence of damped Traub's method
+    :param f: Function to find root of
+    :param df: Derivative of f
+    :param bounds_x: Bounds for the x-axis
+    :param bounds_y: Bounds for the y-axis
+    :param width: Width of the plot
+    :param height: Height of the plot
+    :param tol: Tolerance for convergence
+    :param delta: Damping parameter
+    :param max_iter: Maximum number of iterations
+    :param roots: Roots of the function
+    :param colors: Colors of the roots
+    :return: None
+    """
+    data = np.zeros((height, width, 3), dtype=np.uint8)
+
+    for x in range(width):
+        for y in range(height):
+            # Assign the color to the pixel
+            data[y, x] = pixel_color(x, y, bounds_x, bounds_y, width, height, f, df, roots, colors, delta=delta,
+                                     tol=tol, max_iter=max_iter)
+
+    # Plot the colored picture
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.imshow(data, extent=[bounds_x[0], bounds_x[1], bounds_y[0], bounds_y[1]], origin='lower')
+    # Plot the fixed and free critical points
+    if print_free_fixed:
+        if delta == 0.01:
+            crit = [0.355757 + 0.0949226j, 0.45699 + 0.0420564j,0.483795 + 0.159563j]
+            fixed = [0.46202 + 0.134859j, 0.448528 + 0.0616612j, 0.383233 + 0.097262j]
+            ax.scatter([c.real for c in crit], [c.imag for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.1:
+            crit = [0.260321 + 0.0767402j, 0.479407 + 0.000924291j, 0.611586 + 0.27365j]
+            fixed = [0.51421 + 0.180483j, 0.464986 + 0.0327093j, 0.32306 + 0.089064j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.3:
+            crit = [0.172018 + 0.0534201j, 0.493832 - 0.0176606j, 0.535183 + 0.464817j]
+            fixed = [0.578266 + 0.2292j, 0.475773 + 0.0181482j, 0.271697 + 0.078388j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.5:
+            crit = [0.112641 + 0.0359298j, 0.5 + 0.5j, 0.500662 - 0.0240926j]
+            fixed = [0.647715 + 0.286222j, 0.480972 + 0.0125537j, 0.241177 + 0.0710874j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.7:
+            crit = [0.0637352 + 0.0207368j, 0.480112 + 0.519888j, 0.50486 - 0.0273116j]
+            fixed = [0.616304 + 0.383696j, 0.484241 + 0.00951451j, 0.218878 + 0.0654245j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.99:
+            crit = [0.00200328 + 0.000667266j, 0.461795 + 0.538205j, 0.508739 - 0.029801j]
+            fixed = [0.585625 + 0.414375j, 0.487347 + 0.00696793j, 0.194446 + 0.0589542j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+
+    # Plotting initial conditions Hubbard et al.
+    '''
+    r = 2.283
+    N = 67
+    circle = np.zeros(N, dtype=complex)
+    for i in range(N):
+        theta = 2*np.pi*i/N
+        circle[i] = r*np.exp(1j*theta)
+    ax.scatter([c.real for c in circle], [c.imag for c in circle], marker = 'o', color = 'white', s = 20)
+    '''
+    plt.axis('off')
+    plt.show()
+
+def plot_colored_damped_traub_1iright(f, df, bounds_x, bounds_y, width, height, roots, colors, tol=1e-15, delta=1,
+                          max_iter=100, print_free_fixed=False):
+    """
+    Plots the convergence of damped Traub's method
+    :param f: Function to find root of
+    :param df: Derivative of f
+    :param bounds_x: Bounds for the x-axis
+    :param bounds_y: Bounds for the y-axis
+    :param width: Width of the plot
+    :param height: Height of the plot
+    :param tol: Tolerance for convergence
+    :param delta: Damping parameter
+    :param max_iter: Maximum number of iterations
+    :param roots: Roots of the function
+    :param colors: Colors of the roots
+    :return: None
+    """
+    data = np.zeros((height, width, 3), dtype=np.uint8)
+
+    for x in range(width):
+        for y in range(height):
+            # Assign the color to the pixel
+            data[y, x] = pixel_color(x, y, bounds_x, bounds_y, width, height, f, df, roots, colors, delta=delta,
+                                     tol=tol, max_iter=max_iter)
+
+    # Plot the colored picture
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.imshow(data, extent=[bounds_x[0], bounds_x[1], bounds_y[0], bounds_y[1]], origin='lower')
+    # Plot the fixed and free critical points
+    if print_free_fixed:
+        if delta == 0.01:
+            crit = [0.840437 + 0.516205j, 0.905077 + 0.644243j, 0.957944 + 0.54301j]
+            fixed = [0.902738 + 0.616767j, 0.938339 + 0.551472j, 0.865141 + 0.53798j]
+            ax.scatter([c.real for c in crit], [c.imag for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.1:
+            crit = [0.72635 + 0.388414j, 0.92326 + 0.739679j, 0.999076 + 0.520593j]
+            fixed = [0.910936 + 0.67694j, 0.967291 + 0.535014j,  0.819517 + 0.48579j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.3:
+            crit = [0.834727 + 0.165273j, 0.94658 + 0.827982j, 1.01766 + 0.506168j]
+            fixed = [0.921612 + 0.728303j, 0.981852 + 0.524227j, 0.7708 + 0.421734j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.5:
+            crit = [0.898534 + 0.101466j, 0.96407 + 0.887359j, 1.02409 + 0.499338j]
+            fixed = [0.928913 + 0.758823j, 0.987446 + 0.519028j, 0.713778 + 0.352285j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.7:
+            crit = [0.944719 + 0.0552815j, 0.979263 + 0.936265j, 1.02731 + 0.49514j]
+            fixed = [0.934576 + 0.781122j, 0.990485 + 0.515759j, 0.755517 + 0.244483j]
+            ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
+            ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
+        if delta == 0.99:
+            crit = [0.998329 + 0.00167133j, 0.999333 + 0.997997j, 1.0298 + 0.491261j]
+            fixed = [0.940046 + 0.805554j, 0.993032 + 0.512653j, 0.798505 + 0.201495j]
             ax.scatter([c.real for c in crit], [c.imag  for c in crit], marker='x', color='black', s=40)
             ax.scatter([c.real for c in fixed], [c.imag  for c in fixed], marker='x', color='white', s=40)
 
